@@ -2,6 +2,19 @@
   "name": "tn-municipality",
   "version": "0.1.0",
   "private": true,
+  "description": "A comprehensive API and documentation website for accessing Tunisian municipality data with powerful filtering capabilities",
+  "homepage": "https://tn-municipality-api.vercel.app",
+  "keywords": [
+    "tunisia",
+    "municipality",
+    "api",
+    "governorate",
+    "delegation",
+    "postal-code",
+    "nextjs",
+    "typescript",
+    "react"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
