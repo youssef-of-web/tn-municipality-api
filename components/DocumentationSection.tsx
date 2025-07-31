@@ -50,6 +50,9 @@ export function DocumentationSection({
                 }}>
                     {endpoint}
                 </code>
+                <p style={{ marginTop: 12, color: '#666', fontSize: 14 }}>
+                    Base URL: <code style={{ background: '#f0f0f0', padding: '2px 6px', borderRadius: 4 }}>https://tn-municipality-api.vercel.app</code>
+                </p>
             </Card>
 
             <Card style={{ padding: 24, marginBottom: 24 }}>
