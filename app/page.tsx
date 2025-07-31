@@ -101,7 +101,7 @@ export default function HomePage() {
         <Footer />
       </main>
 
-      <StickyGitHubButton repoUrl="https://github.com/your-repo-url" />
+      <StickyGitHubButton repoUrl="https://github.com/youssef-of-web/tn-municipality-api" />
       <ScrollToTop />
     </>
   );
