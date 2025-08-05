@@ -2,8 +2,8 @@ import { Card } from "./ui/card";
 
 interface DocumentationSectionProps {
     title?: string;
-    endpoint?: string;
-    parameters?: Array<{ name: string; description: string; example: string }>;
+    endpoints?: string[];
+    parameters?: Array<{ name: string; description: string; example: string, endpoint: number, type:string }>;
     exampleRequest?: string;
     exampleResponse?: string;
     className?: string;
@@ -11,22 +11,35 @@ interface DocumentationSectionProps {
 
 export function DocumentationSection({
     title = "API Documentation",
-    endpoint = "GET /api/municipalities",
+    endpoints = ["GET /api/municipalities", "GET /api/municipalities/near"],
     parameters = [
         {
             name: "name",
+            type: "string",
             description: "Filter by governorate name (e.g., Ariana, Tunis, Sfax)",
-            example: "?name=ariana"
+            example: "?name=ariana",
+            endpoint:0
         },
         {
             name: "delegation",
+            type: "string",
             description: "Filter by delegation name within a governorate",
-            example: "?delegation=ville"
+            example: "?delegation=ville",
+            endpoint:0
         },
         {
             name: "postalCode",
+            type: "string",
             description: "Filter by postal code (5-digit format)",
-            example: "?postalCode=2058"
+            example: "?postalCode=2058",
+            endpoint: 0
+        },
+        {
+            name: "lat, lng, radius",
+            type: "[number, number, number]",
+            description: "Get municipalities near a specific location within a radius (in km)",
+            example: "?lat=36.8065&lng=10.1815&radius=5000",
+            endpoint: 1
         }
     ],
     exampleRequest,
@@ -38,8 +51,10 @@ export function DocumentationSection({
             <h2 style={{ fontSize: 28, fontWeight: 700, marginBottom: 24, textAlign: 'center' }}>{title}</h2>
 
             <Card style={{ padding: 24, marginBottom: 24 }}>
-                <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>🔗 API Endpoint</h3>
-                <code style={{
+                <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>🔗 API Endpoints</h3>
+                {
+                 endpoints.map((endpoint: string) => (
+                    <code key={endpoint} style={{
                     background: '#f4f4f4',
                     padding: 12,
                     borderRadius: 8,
@@ -50,6 +65,8 @@ export function DocumentationSection({
                 }}>
                     {endpoint}
                 </code>
+                 ))
+                }
                 <p style={{ marginTop: 12, color: '#666', fontSize: 14 }}>
                     Base URL: <code style={{ background: '#f0f0f0', padding: '2px 6px', borderRadius: 4 }}>https://tn-municipality-api.vercel.app</code>
                 </p>
@@ -79,14 +96,14 @@ export function DocumentationSection({
                                 }}>
                                     {param.name}
                                 </code>
-                                <span style={{ fontSize: 12, color: '#666' }}>string</span>
+                                <span style={{ fontSize: 12, color: '#666' }}>{param.type}</span>
                             </div>
                             <p style={{ marginBottom: 8, fontSize: 14, lineHeight: 1.5 }}>
                                 {param.description}
                             </p>
                             <div style={{ fontSize: 13, color: '#666' }}>
                                 <strong>Example:</strong> <code style={{ background: '#f0f0f0', padding: '2px 6px', borderRadius: 4 }}>
-                                    {endpoint}{param.example}
+                                    {endpoints[param.endpoint]}{param.example}
                                 </code>
                             </div>
                         </div>
