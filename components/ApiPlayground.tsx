@@ -8,6 +8,8 @@ import { motion } from "framer-motion";
 import { Send } from "lucide-react";
 import { Select } from "./ui/select";
 
+import { ToastContainer, toast } from 'react-toastify';
+
 interface ApiPlaygroundProps {
   heading?: string;
   description?: string;
@@ -20,6 +22,7 @@ export function ApiPlayground({ heading = "API Playground", description = "Test 
   const [postalCode, setPostalCode] = useState("");
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [loading_, setLoading_] = useState(false);
   const [radius, setRadius] = useState(10);
   const [sortBy, setSortBy] = useState("Name");
   const [lastUrl, setLastUrl] = useState("");
@@ -50,6 +53,7 @@ export function ApiPlayground({ heading = "API Playground", description = "Test 
     setLoading(false);
   }
   async function getMunicipalitiesNearby(radius = 10) {
+    setLoading_(true);
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const lat = position.coords.latitude;
@@ -60,11 +64,15 @@ export function ApiPlayground({ heading = "API Playground", description = "Test 
         setResult(data);
         const current_url = `http://${window.location.host}${url}`;
         setLastUrl(current_url);
+        setLoading_(false);
       }, (error) => {
-        console.log("Geolocation error:", error);
+        console.error("Geolocation error:", error);
+        setLoading_(false);
+        toast.error("Failed to get your location. Please allow location access or check your internet connection.");
       });
     } else {
-      console.log("Geolocation is not supported by this browser.");
+      setLoading_(false);
+      toast.error("Geolocation is not supported by this browser.");
     }
   }
   return (
@@ -154,7 +162,7 @@ export function ApiPlayground({ heading = "API Playground", description = "Test 
               fontWeight: 500,
               marginTop: 20,
             }}>
-              Get Nearby Municipalities <Send size={18} />
+              {loading_ ? 'Loading...' : 'Get Nearby Municipalities'} <Send size={18} />
             </Button>
           </div>
         </form>
@@ -186,6 +194,7 @@ export function ApiPlayground({ heading = "API Playground", description = "Test 
             {result && lastUrl && (
               <Button type="button" onClick={() => {
                     navigator.clipboard.writeText(lastUrl);
+                    toast.info("URL copied to clipboard!");
                   }} variant="outline" size="lg" style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -201,6 +210,17 @@ export function ApiPlayground({ heading = "API Playground", description = "Test 
             )}
         </motion.div>
       </Card>
-    </section>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+    />
+  </section>
   );
 }
