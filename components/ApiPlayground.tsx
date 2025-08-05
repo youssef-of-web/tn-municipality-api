@@ -6,6 +6,9 @@ import { Label } from "./ui/label";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Send } from "lucide-react";
+import { Select } from "./ui/select";
+
+import { ToastContainer, toast } from 'react-toastify';
 
 interface ApiPlaygroundProps {
   heading?: string;
@@ -19,7 +22,23 @@ export function ApiPlayground({ heading = "API Playground", description = "Test 
   const [postalCode, setPostalCode] = useState("");
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [loading_, setLoading_] = useState(false);
+  const [radius, setRadius] = useState(10);
+  const [sortBy, setSortBy] = useState("Name");
+  const [lastUrl, setLastUrl] = useState("");
 
+  async function routeAPI(e) {
+    e.preventDefault();
+    const clickedButton = e.nativeEvent?.submitter;
+    if (clickedButton) {
+      const value = clickedButton.value;
+      if (value === "filter") {
+        await handleFetch();
+      } else if (value === "getNearby") {
+        await getMunicipalitiesNearby(radius);
+      }
+     }
+  }
   async function handleFetch() {
     setLoading(true);
     let url = "/api/municipalities?";
@@ -29,9 +48,33 @@ export function ApiPlayground({ heading = "API Playground", description = "Test 
     const res = await fetch(url);
     const data = await res.json();
     setResult(data);
+    const current_url = `http://${window.location.host}${url}`;
+    setLastUrl(current_url);
     setLoading(false);
   }
-
+  async function getMunicipalitiesNearby(radius = 10) {
+    setLoading_(true);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const url = `/api/municipalities/near?lat=${lat}&lng=${lng}&radius=${radius}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        setResult(data);
+        const current_url = `http://${window.location.host}${url}`;
+        setLastUrl(current_url);
+        setLoading_(false);
+      }, (error) => {
+        console.error("Geolocation error:", error);
+        setLoading_(false);
+        toast.error("Failed to get your location. Please allow location access or check your internet connection.");
+      });
+    } else {
+      setLoading_(false);
+      toast.error("Geolocation is not supported by this browser.");
+    }
+  }
   return (
     <section className={className}>
       <motion.h2
@@ -52,7 +95,7 @@ export function ApiPlayground({ heading = "API Playground", description = "Test 
       </motion.p>
       <Card style={{ padding: 24 }}>
         <form
-          onSubmit={e => { e.preventDefault(); handleFetch(); }}
+          onSubmit={routeAPI}
           style={{
             display: 'flex',
             flexWrap: 'wrap',
@@ -79,16 +122,47 @@ export function ApiPlayground({ heading = "API Playground", description = "Test 
               style={{ borderRadius: 12, boxShadow: '0 1px 4px #0001', border: '1.5px solid #e0e0e0', transition: 'border 0.2s', outline: 'none', height: 48, fontSize: 18 }}
             />
           </div>
+           <div style={{ minWidth: 140, flex: '1 1 140px', maxWidth: 180 }}>
+            <Label htmlFor="postalCode" style={{ marginBottom: 8, display: 'block' }}>SortBy</Label>
+            <Select id="sortBy" value={sortBy} onChange={e => setSortBy(e.target.value)}
+              style={{ borderRadius: 12, boxShadow: '0 1px 4px #0001', border: '1.5px solid #e0e0e0', transition: 'border 0.2s', outline: 'none', height: 48, fontSize: 18 }}
+            >
+              <option value="name">Name</option>
+              <option value="nameAr">NameAr (Arabic)</option>
+            </Select>
+          </div>
           <div style={{ alignSelf: 'end' }}>
-            <Button type="submit" disabled={loading} size="lg" style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
+            <Button type="submit" value="filter" disabled={loading} size="lg" style={{
+              display: 'flex',
+              alignItems: 'center',
               gap: 8,
               height: 48,
               fontSize: 16,
               fontWeight: 500
             }}>
               {loading ? 'Loading...' : 'Test API'} <Send size={18} />
+            </Button>
+          </div>
+          <div style={{display: 'flex', gap: 16, justifyContent: 'center', marginBottom: 16, marginTop: 16}}>
+            <div>    
+              <Label htmlFor="radius" style={{ marginBottom: 8, display: 'block' }}>Radius (km)</Label>
+              <Input
+                id="radius"
+                style={{ borderRadius: 12, boxShadow: '0 1px 4px #0001', border: '1.5px solid #e0e0e0', transition: 'border 0.2s', outline: 'none', height: 48, fontSize: 18, marginBottom: 16, width: 'fit-content' }}
+                value={radius}
+                onChange={e => setRadius(Number(e.target.value))}
+              />
+            </div>
+            <Button type="submit" value="getNearby" size="lg" style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              height: 48,
+              fontSize: 16,
+              fontWeight: 500,
+              marginTop: 20,
+            }}>
+              {loading_ ? 'Loading...' : 'Get Nearby Municipalities'} <Send size={18} />
             </Button>
           </div>
         </form>
@@ -117,8 +191,36 @@ export function ApiPlayground({ heading = "API Playground", description = "Test 
           >
             {result ? JSON.stringify(result, null, 2) : '// Your API response will appear here'}
           </motion.pre>
+            {result && lastUrl && (
+              <Button type="button" onClick={() => {
+                    navigator.clipboard.writeText(lastUrl);
+                    toast.info("URL copied to clipboard!");
+                  }} variant="outline" size="lg" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    height: 48,
+                    fontSize: 16,
+                    fontWeight: 500,
+                    marginTop: 16,
+                    cursor: 'pointer',
+                    }}>
+                  Copy URL <Send size={18} />
+                  </Button>
+            )}
         </motion.div>
       </Card>
-    </section>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+    />
+  </section>
   );
 }

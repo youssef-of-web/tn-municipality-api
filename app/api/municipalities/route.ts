@@ -1,5 +1,6 @@
-import { data } from '../../../data/data';
+import { data } from '@/data/data';
 import { NextResponse } from 'next/server';
+
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -29,5 +30,24 @@ export async function GET(request: Request) {
     })).filter(item => item.Delegations.length > 0);
   }
 
+  // Sorting by Name (governorate) alphabetically or by NameAr (Arabic name)
+  const sortingField = searchParams.get('sort');
+  const sortOrder = searchParams.get('order') || 'asc';
+  if (sortingField) {
+    if (sortingField === 'name') {
+      results = results.sort((a, b) => {
+        const fieldA = a.Name.toLowerCase();
+        const fieldB = b.Name.toLowerCase();
+        return sortOrder === 'asc' ? fieldA.localeCompare(fieldB) : fieldB.localeCompare(fieldA);
+      });
+    }
+    else if (sortingField === 'nameAr') {
+      results = results.sort((a, b) => {
+        const fieldA = a.NameAr.toLowerCase();
+        const fieldB = b.NameAr.toLowerCase();
+        return sortOrder === 'asc' ? fieldA.localeCompare(fieldB,"ar") : fieldB.localeCompare(fieldA,"ar");
+      });
+    }
+  }
   return NextResponse.json(results);
 }
