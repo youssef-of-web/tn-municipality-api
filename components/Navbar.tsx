@@ -1,30 +1,65 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Menu, X, Github } from "lucide-react";
-import { Button } from "./ui/button";
+import { Github, Home, BookOpen, Code2 } from "lucide-react";
 
 interface NavbarProps {
   className?: string;
 }
 
-export function Navbar({ className }: NavbarProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+const navItems = [
+  { name: "Home", href: "#home", icon: <Home size={22} /> },
+  { name: "API", href: "#playground", icon: <Code2 size={22} /> },
+  { name: "Docs", href: "#docs", icon: <BookOpen size={22} /> },
+];
 
+function scrollToHash(hash: string) {
+  const el = document.getElementById(hash.replace("#", ""));
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  } else {
+    window.location.hash = hash;
+  }
+}
+
+export function Navbar({ className }: NavbarProps) {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("home");
+
+  // Responsive check
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Scroll state
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
+
+      // Active section highlight
+      let found = false;
+      for (const item of navItems) {
+        const id = item.href.replace("#", "");
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 80 && rect.bottom > 80) {
+            setActiveSection(id);
+            found = true;
+            break;
+          }
+        }
+      }
+      if (!found) setActiveSection("home");
     };
-    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const navItems = [
-    { name: "Home", href: "#home" },
-    { name: "API", href: "#playground" },
-    { name: "Docs", href: "#docs" },
-  ];
 
   return (
     <motion.nav
@@ -35,14 +70,16 @@ export function Navbar({ className }: NavbarProps) {
         left: 0,
         right: 0,
         zIndex: 1000,
-        background: isScrolled ? "rgba(255, 255, 255, 0.95)" : "transparent",
+        background: isScrolled ? "rgba(255, 255, 255, 0.97)" : "transparent",
         backdropFilter: isScrolled ? "blur(10px)" : "none",
-        borderBottom: isScrolled ? "1px solid rgba(0, 0, 0, 0.1)" : "none",
-        transition: "all 0.3s ease",
+        borderBottom: isScrolled ? "1px solid rgba(0, 0, 0, 0.08)" : "none",
+        transition: "all 0.3s cubic-bezier(.4,0,.2,1)",
+        boxShadow: isScrolled ? "0 2px 12px rgba(0,0,0,0.04)" : "none",
       }}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
+      aria-label="Main navigation"
     >
       <div
         style={{
@@ -56,121 +93,217 @@ export function Navbar({ className }: NavbarProps) {
         }}
       >
         {/* Logo */}
-        <motion.div
-          style={{ fontSize: 20, fontWeight: 700, color: "#0070f3" }}
+        <motion.button
+          type="button"
+          aria-label="Go to home"
+          style={{
+            fontSize: 20,
+            fontWeight: 700,
+            color: "#0070f3",
+            cursor: "pointer",
+            userSelect: "none",
+            letterSpacing: "0.5px",
+            display: "flex",
+            alignItems: "center",
+            background: "none",
+            border: "none",
+            outline: "none",
+            padding: 0,
+          }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => {
+            scrollToHash("#home");
+          }}
         >
-          Municipality API
-        </motion.div>
+          <span
+            style={{
+              display: "inline-block",
+              background: "linear-gradient(90deg, #0070f3 60%, #00c6fb 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontWeight: 800,
+              fontSize: 24,
+              marginRight: 2,
+              letterSpacing: "1px",
+            }}
+          >
+            M
+          </span>
+          unicipality API
+        </motion.button>
 
         {/* Desktop Navigation */}
-        <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
-          <div style={{ display: "flex", gap: 32 }}>
-            {navItems.map((item, index) => (
-              <motion.a
-                key={item.name}
-                href={item.href}
-                style={{
-                  textDecoration: "none",
-                  color: "#333",
-                  fontWeight: 500,
-                  fontSize: 16,
-                }}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                {item.name}
-              </motion.a>
-            ))}
-          </div>
-
-          {/* GitHub Button */}
-          <motion.button
-            onClick={() =>
-              window.open(
-                "https://github.com/youssef-of-web/tn-municipality-api",
-                "_blank",
-              )
-            }
+        {!isMobile && (
+          <nav
+            aria-label="Primary"
             style={{
-              background: "none",
-              border: "2px solid #0070f3",
-              borderRadius: 8,
-              padding: "8px 16px",
-              cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              gap: 8,
-              color: "#0070f3",
-              fontWeight: 500,
-              transition: "all 0.2s ease",
+              gap: 24,
             }}
-            whileHover={{
-              scale: 1.05,
-              backgroundColor: "#0070f3",
-              color: "white",
-              boxShadow: "0 4px 12px rgba(0, 112, 243, 0.3)",
-            }}
-            whileTap={{ scale: 0.95 }}
           >
-            <Github size={18} />
-            GitHub
-          </motion.button>
-        </div>
+            <div style={{ display: "flex", gap: 32 }}>
+              {navItems.map((item, index) => (
+                <motion.button
+                  key={item.name}
+                  type="button"
+                  aria-current={
+                    activeSection === item.href.replace("#", "")
+                      ? "page"
+                      : undefined
+                  }
+                  aria-label={item.name}
+                  onClick={() => scrollToHash(item.href)}
+                  style={{
+                    textDecoration: "none",
+                    color:
+                      activeSection === item.href.replace("#", "")
+                        ? "#0070f3"
+                        : "#333",
+                    fontWeight:
+                      activeSection === item.href.replace("#", "") ? 700 : 500,
+                    fontSize: 16,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "4px 10px",
+                    borderRadius: 6,
+                    background:
+                      activeSection === item.href.replace("#", "")
+                        ? "#f0f4ff"
+                        : "none",
+                    border: "none",
+                    transition:
+                      "background 0.15s, color 0.15s, font-weight 0.15s",
+                    outline: "none",
+                  }}
+                  whileHover={{
+                    y: -2,
+                    backgroundColor: "#f0f4ff",
+                    color: "#0070f3",
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  tabIndex={0}
+                >
+                  {item.icon}
+                  {item.name}
+                </motion.button>
+              ))}
+            </div>
 
-        {/* Mobile Menu Button */}
-        <div style={{ display: "none" }}>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            style={{ padding: 8 }}
-          >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </Button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <motion.div
-          style={{
-            position: "absolute",
-            top: "100%",
-            left: 0,
-            right: 0,
-            background: "white",
-            borderTop: "1px solid rgba(0, 0, 0, 0.1)",
-            padding: "16px",
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-          }}
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-        >
-          {navItems.map((item) => (
-            <a
-              key={item.name}
-              href={item.href}
+            {/* GitHub Button */}
+            <motion.button
+              onClick={() =>
+                window.open(
+                  "https://github.com/youssef-of-web/tn-municipality-api",
+                  "_blank",
+                  "noopener noreferrer",
+                )
+              }
               style={{
-                textDecoration: "none",
-                color: "#333",
+                background: "none",
+                border: "2px solid #0070f3",
+                borderRadius: 8,
+                padding: "8px 16px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                color: "#0070f3",
                 fontWeight: 500,
-                padding: "8px 0",
+                transition: "all 0.2s ease",
+                outline: "none",
               }}
-              onClick={() => setIsMenuOpen(false)}
+              whileHover={{
+                scale: 1.05,
+                backgroundColor: "#0070f3",
+                color: "white",
+                boxShadow: "0 4px 12px rgba(0, 112, 243, 0.3)",
+              }}
+              whileTap={{ scale: 0.95 }}
+              tabIndex={0}
+              aria-label="Open GitHub repository"
             >
-              {item.name}
-            </a>
-          ))}
-        </motion.div>
-      )}
+              <Github size={18} />
+              GitHub
+            </motion.button>
+          </nav>
+        )}
+
+        {/* Mobile Navigation: Icons Only */}
+        {isMobile && (
+          <nav
+            aria-label="Primary mobile"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 18,
+            }}
+          >
+            {navItems.map((item, index) => (
+              <button
+                key={item.name}
+                aria-label={item.name}
+                onClick={() => scrollToHash(item.href)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: 6,
+                  borderRadius: 8,
+                  color:
+                    activeSection === item.href.replace("#", "")
+                      ? "#0070f3"
+                      : "#333",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 0,
+                  transition: "background 0.15s, color 0.15s",
+                  outline: "none",
+                  boxShadow:
+                    activeSection === item.href.replace("#", "")
+                      ? "0 2px 8px rgba(0,112,243,0.08)"
+                      : "none",
+                }}
+                tabIndex={0}
+              >
+                {item.icon}
+              </button>
+            ))}
+            <button
+              aria-label="Open GitHub repository"
+              onClick={() =>
+                window.open(
+                  "https://github.com/youssef-of-web/tn-municipality-api",
+                  "_blank",
+                  "noopener noreferrer",
+                )
+              }
+              style={{
+                background: "none",
+                border: "none",
+                padding: 6,
+                borderRadius: 8,
+                color: "#0070f3",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 0,
+                transition: "background 0.15s, color 0.15s",
+                outline: "none",
+              }}
+              tabIndex={0}
+            >
+              <Github size={22} />
+            </button>
+          </nav>
+        )}
+      </div>
     </motion.nav>
   );
 }
