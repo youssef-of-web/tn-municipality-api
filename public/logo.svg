@@ -1,0 +1,18 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Municipality API Logo">
+  <defs>
+    <linearGradient id="municipality-gradient" x1="0" y1="0" x2="40" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0070f3" offset="0.6"/>
+      <stop stop-color="#00c6fb" offset="1"/>
+    </linearGradient>
+  </defs>
+  <text
+    x="7"
+    y="29"
+    font-family="Inter, Arial, Helvetica, sans-serif"
+    font-size="28"
+    font-weight="800"
+    letter-spacing="1"
+    fill="url(#municipality-gradient)"
+    style="dominant-baseline: middle;"
+  >M</text>
+</svg>
