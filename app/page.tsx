@@ -15,18 +15,19 @@ export default function HomePage() {
     {
       icon: "🚀",
       title: "Fast & Reliable",
-      description: "Lightning-fast responses with 99.9% uptime guarantee"
+      description: "Lightning-fast responses with 99.9% uptime guarantee",
     },
     {
       icon: "🔍",
       title: "Powerful Filtering",
-      description: "Filter by governorate, delegation, postal code, and more"
+      description: "Filter by governorate, delegation, postal code, and more",
     },
     {
       icon: "📊",
       title: "Rich Data",
-      description: "Complete municipality data with coordinates and Arabic names"
-    }
+      description:
+        "Complete municipality data with coordinates and Arabic names",
+    },
   ];
 
   const exampleRequest = `fetch('/api/municipalities?name=ariana')
@@ -70,13 +71,28 @@ export default function HomePage() {
   return (
     <>
       <Navbar />
-      <main style={{ maxWidth: 1200, margin: "0 auto", padding: 16, paddingTop: 86 }}>
+      <main
+        style={{
+          maxWidth: 1200,
+          margin: "0 auto",
+          padding: 16,
+          paddingTop: 86,
+        }}
+      >
         <div id="home">
           <HeroSection
             title="Tunisian Municipality API"
             description="Access comprehensive Tunisian municipality data with powerful filtering options. Built for developers, by developers."
-            onPrimaryClick={() => document.getElementById('playground')?.scrollIntoView({ behavior: 'smooth' })}
-            onSecondaryClick={() => document.getElementById('docs')?.scrollIntoView({ behavior: 'smooth' })}
+            onPrimaryClick={() =>
+              document
+                .getElementById("playground")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+            onSecondaryClick={() =>
+              document
+                .getElementById("docs")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
           />
         </div>
 
@@ -85,10 +101,7 @@ export default function HomePage() {
         <StatsSection />
 
         <div id="playground" style={{ marginBottom: 48 }}>
-          <ApiPlayground
-            heading="API Playground"
-            description=""
-          />
+          <ApiPlayground heading="API Playground" description="" />
         </div>
 
         <div id="docs">

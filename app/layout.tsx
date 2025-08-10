@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Tunisian Municipality API",
-  description: "Access comprehensive Tunisian municipality data with powerful filtering options. Built for developers.",
+  description:
+    "Access comprehensive Tunisian municipality data with powerful filtering options. Built for developers.",
 };
 
 export default function RootLayout({
