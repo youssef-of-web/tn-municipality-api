@@ -110,16 +110,10 @@ export function ApiPlayground({
       <Card style={{ padding: 24 }}>
         <form
           onSubmit={routeAPI}
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 16,
-            justifyContent: "center",
-            marginBottom: 24,
-          }}
+          className="flex flex-wrap gap-4 justify-center mb-6"
         >
-          <div style={{ minWidth: 180, flex: "1 1 180px", maxWidth: 240 }}>
-            <Label htmlFor="name" style={{ marginBottom: 8, display: "block" }}>
+          <div className="min-w-[180px] max-w-[240px] flex-1">
+            <Label htmlFor="name" className="mb-2 block">
               Governorate Name
             </Label>
             <Input
@@ -127,22 +121,11 @@ export function ApiPlayground({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Ariana"
-              style={{
-                borderRadius: 12,
-                boxShadow: "0 1px 4px #0001",
-                border: "1.5px solid #e0e0e0",
-                transition: "border 0.2s",
-                outline: "none",
-                height: 48,
-                fontSize: 18,
-              }}
+              className="rounded-xl shadow-sm border border-gray-200 transition duration-200 outline-none h-12 text-lg w-full"
             />
           </div>
-          <div style={{ minWidth: 180, flex: "1 1 180px", maxWidth: 240 }}>
-            <Label
-              htmlFor="delegation"
-              style={{ marginBottom: 8, display: "block" }}
-            >
+          <div className="min-w-[180px] max-w-[240px] flex-1">
+            <Label htmlFor="delegation" className="mb-2 block">
               Delegation
             </Label>
             <Input
@@ -150,22 +133,11 @@ export function ApiPlayground({
               value={delegation}
               onChange={(e) => setDelegation(e.target.value)}
               placeholder="e.g. Ville"
-              style={{
-                borderRadius: 12,
-                boxShadow: "0 1px 4px #0001",
-                border: "1.5px solid #e0e0e0",
-                transition: "border 0.2s",
-                outline: "none",
-                height: 48,
-                fontSize: 18,
-              }}
+              className="rounded-xl shadow-sm border border-gray-200 transition duration-200 outline-none h-12 text-lg w-full"
             />
           </div>
-          <div style={{ minWidth: 140, flex: "1 1 140px", maxWidth: 180 }}>
-            <Label
-              htmlFor="postalCode"
-              style={{ marginBottom: 8, display: "block" }}
-            >
+          <div className="min-w-[140px] max-w-[180px] flex-1">
+            <Label htmlFor="postalCode" className="mb-2 block">
               Postal Code
             </Label>
             <Input
@@ -173,106 +145,53 @@ export function ApiPlayground({
               value={postalCode}
               onChange={(e) => setPostalCode(e.target.value)}
               placeholder="e.g. 2058"
-              style={{
-                borderRadius: 12,
-                boxShadow: "0 1px 4px #0001",
-                border: "1.5px solid #e0e0e0",
-                transition: "border 0.2s",
-                outline: "none",
-                height: 48,
-                fontSize: 18,
-              }}
+              className="rounded-xl shadow-sm border border-gray-200 transition duration-200 outline-none h-12 text-lg w-full"
             />
           </div>
-          <div style={{ minWidth: 140, flex: "1 1 140px", maxWidth: 180 }}>
-            <Label
-              htmlFor="postalCode"
-              style={{ marginBottom: 8, display: "block" }}
-            >
+          <div className="min-w-[140px] max-w-[180px] flex-1">
+            <Label htmlFor="sortBy" className="mb-2 block">
               SortBy
             </Label>
             <Select
               id="sortBy"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              style={{
-                borderRadius: 12,
-                boxShadow: "0 1px 4px #0001",
-                border: "1.5px solid #e0e0e0",
-                transition: "border 0.2s",
-                outline: "none",
-                height: 48,
-                fontSize: 18,
-              }}
+              className="rounded-xl shadow-sm border border-gray-200 transition duration-200 outline-none h-12 text-lg w-full"
             >
               <option value="name">Name</option>
               <option value="nameAr">NameAr (Arabic)</option>
             </Select>
           </div>
-          <div style={{ alignSelf: "end" }}>
+          <div className="flex items-end">
             <Button
               type="submit"
               value="filter"
               disabled={loading}
               size="lg"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                height: 48,
-                fontSize: 16,
-                fontWeight: 500,
-              }}
+              className="flex items-center gap-2 h-12 text-base font-medium w-full md:w-auto justify-center"
             >
               {loading ? "Loading..." : "Test API"} <Send size={18} />
             </Button>
           </div>
-          <div
-            style={{
-              display: "flex",
-              gap: 16,
-              justifyContent: "center",
-              marginBottom: 16,
-              marginTop: 16,
-            }}
-          >
-            <div>
-              <Label
-                htmlFor="radius"
-                style={{ marginBottom: 8, display: "block" }}
-              >
+          <div className="flex flex-col md:flex-row gap-4 justify-center mb-4 mt-4 w-full">
+            <div className="flex flex-col w-full md:w-auto">
+              <Label htmlFor="radius" className="mb-2 block">
                 Radius (km)
               </Label>
               <Input
                 id="radius"
-                style={{
-                  borderRadius: 12,
-                  boxShadow: "0 1px 4px #0001",
-                  border: "1.5px solid #e0e0e0",
-                  transition: "border 0.2s",
-                  outline: "none",
-                  height: 48,
-                  fontSize: 18,
-                  marginBottom: 16,
-                  width: "fit-content",
-                }}
+                className="rounded-xl shadow-sm border border-gray-200 transition duration-200 outline-none h-12 text-lg mb-4 w-full md:w-auto"
                 value={radius}
                 onChange={(e) => setRadius(Number(e.target.value))}
+                type="number"
+                min={0}
               />
             </div>
             <Button
               type="submit"
               value="getNearby"
               size="lg"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                height: 48,
-                fontSize: 16,
-                fontWeight: 500,
-                marginTop: 20,
-              }}
+              className="flex items-center gap-2 h-12 text-base font-medium mt-2 md:mt-5 w-full md:w-auto justify-center"
             >
               {loading_ ? "Loading..." : "Get Nearby Municipalities"}{" "}
               <Send size={18} />
