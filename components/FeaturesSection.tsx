@@ -37,6 +37,7 @@ export function FeaturesSection({
 }: FeaturesSectionProps) {
   return (
     <div
+      dir="rtl"
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
@@ -46,8 +47,8 @@ export function FeaturesSection({
       }}
       className={className}
     >
-      {features.map((feature, index) => (
-        <Card key={index} style={{ padding: 20, textAlign: "center" }}>
+      {features.map((feature) => (
+        <Card key={feature.title} style={{ padding: 20, textAlign: "center" }}>
           <div
             style={{
               marginBottom: 12,

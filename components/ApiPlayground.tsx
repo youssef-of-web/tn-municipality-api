@@ -3,11 +3,12 @@ import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Send } from "lucide-react";
 import { Select } from "./ui/select";
-
+import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ToastContainer, toast } from "react-toastify";
 
 interface ApiPlaygroundProps {
@@ -21,6 +22,8 @@ export function ApiPlayground({
   description = "Test the API with real data.",
   className,
 }: ApiPlaygroundProps) {
+  const tPlayground = useTranslations("playground");
+  const pathname = usePathname();
   const [name, setName] = useState("");
   const [delegation, setDelegation] = useState("");
   const [postalCode, setPostalCode] = useState("");
@@ -30,7 +33,13 @@ export function ApiPlayground({
   const [radius, setRadius] = useState(10);
   const [sortBy, setSortBy] = useState("Name");
   const [lastUrl, setLastUrl] = useState("");
+  const [currentLanguage, setCurrentLanguage] = useState("en");
 
+  const isRTL = currentLanguage === "ar";
+  useEffect(() => {
+    const pathLang = pathname.startsWith("/ar") ? "ar" : "en";
+    setCurrentLanguage(pathLang);
+  }, [pathname]);
   async function routeAPI(e: any) {
     e.preventDefault();
     const clickedButton = e.nativeEvent?.submitter;
@@ -74,18 +83,21 @@ export function ApiPlayground({
         (error) => {
           console.error("Geolocation error:", error);
           setLoading_(false);
-          toast.error(
-            "Failed to get your location. Please allow location access or check your internet connection.",
-          );
+          toast.error(tPlayground("geolocationError"));
         },
       );
     } else {
       setLoading_(false);
-      toast.error("Geolocation is not supported by this browser.");
+      toast.error(tPlayground("geolocationNotSupported"));
     }
   }
   return (
-    <section className={className}>
+    <section
+      className={className}
+      style={{
+        direction: isRTL ? "rtl" : "ltr",
+      }}
+    >
       <motion.h2
         style={{
           fontSize: 28,
@@ -100,7 +112,11 @@ export function ApiPlayground({
         {heading}
       </motion.h2>
       <motion.p
-        style={{ color: "#666", marginBottom: 24, textAlign: "center" }}
+        style={{
+          color: "#666",
+          marginBottom: 24,
+          textAlign: "center",
+        }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
@@ -111,55 +127,93 @@ export function ApiPlayground({
         <form
           onSubmit={routeAPI}
           className="flex flex-wrap gap-4 justify-center mb-6"
+          style={{
+            direction: isRTL ? "rtl" : "ltr",
+          }}
         >
           <div className="min-w-[180px] max-w-[240px] flex-1">
-            <Label htmlFor="name" className="mb-2 block">
-              Governorate Name
+            <Label
+              htmlFor="name"
+              className="mb-2 block"
+              style={{
+                textAlign: isRTL ? "right" : "left",
+                display: "block",
+              }}
+            >
+              {tPlayground("governorateName")}
             </Label>
             <Input
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Ariana"
+              placeholder={tPlayground("governorateNamePlaceholder")}
               className="rounded-xl shadow-sm border border-gray-200 transition duration-200 outline-none h-12 text-lg w-full"
+              style={{
+                textAlign: isRTL ? "right" : "left",
+                direction: isRTL ? "rtl" : "ltr",
+              }}
             />
           </div>
           <div className="min-w-[180px] max-w-[240px] flex-1">
-            <Label htmlFor="delegation" className="mb-2 block">
-              Delegation
+            <Label
+              htmlFor="delegation"
+              className="mb-2 block"
+              style={{ textAlign: isRTL ? "right" : "left", display: "block" }}
+            >
+              {tPlayground("delegation")}
             </Label>
             <Input
               id="delegation"
               value={delegation}
               onChange={(e) => setDelegation(e.target.value)}
-              placeholder="e.g. Ville"
+              placeholder={tPlayground("delegationPlaceholder")}
               className="rounded-xl shadow-sm border border-gray-200 transition duration-200 outline-none h-12 text-lg w-full"
+              style={{
+                textAlign: isRTL ? "right" : "left",
+                direction: isRTL ? "rtl" : "ltr",
+              }}
             />
           </div>
           <div className="min-w-[140px] max-w-[180px] flex-1">
-            <Label htmlFor="postalCode" className="mb-2 block">
-              Postal Code
+            <Label
+              htmlFor="postalCode"
+              className="mb-2 block"
+              style={{ textAlign: isRTL ? "right" : "left", display: "block" }}
+            >
+              {tPlayground("postalCode")}
             </Label>
             <Input
               id="postalCode"
               value={postalCode}
               onChange={(e) => setPostalCode(e.target.value)}
-              placeholder="e.g. 2058"
+              placeholder={tPlayground("postalCodePlaceholder")}
               className="rounded-xl shadow-sm border border-gray-200 transition duration-200 outline-none h-12 text-lg w-full"
+              style={{
+                textAlign: isRTL ? "right" : "left",
+                direction: isRTL ? "rtl" : "ltr",
+              }}
             />
           </div>
           <div className="min-w-[140px] max-w-[180px] flex-1">
-            <Label htmlFor="sortBy" className="mb-2 block">
-              SortBy
+            <Label
+              htmlFor="sortBy"
+              className="mb-2 block"
+              style={{ textAlign: isRTL ? "right" : "left", display: "block" }}
+            >
+              {tPlayground("sortBy")}
             </Label>
             <Select
               id="sortBy"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               className="rounded-xl shadow-sm border border-gray-200 transition duration-200 outline-none h-12 text-lg w-full"
+              style={{
+                textAlign: isRTL ? "right" : "left",
+                direction: isRTL ? "rtl" : "ltr",
+              }}
             >
-              <option value="name">Name</option>
-              <option value="nameAr">NameAr (Arabic)</option>
+              <option value="name">{tPlayground("sortByName")}</option>
+              <option value="nameAr">{tPlayground("sortByNameAr")}</option>
             </Select>
           </div>
           <div className="flex items-end">
@@ -169,14 +223,25 @@ export function ApiPlayground({
               disabled={loading}
               size="lg"
               className="flex items-center gap-2 h-12 text-base font-medium w-full md:w-auto justify-center"
+              style={{
+                flexDirection: isRTL ? "row-reverse" : "row",
+              }}
             >
-              {loading ? "Loading..." : "Test API"} <Send size={18} />
+              {loading ? tPlayground("loading") : tPlayground("testApi")}
+              <Send size={18} />
             </Button>
           </div>
           <div className="flex flex-col md:flex-row gap-4 justify-center mb-4 mt-4 w-full">
             <div className="flex flex-col w-full md:w-auto">
-              <Label htmlFor="radius" className="mb-2 block">
-                Radius (km)
+              <Label
+                htmlFor="radius"
+                className="mb-2 block"
+                style={{
+                  textAlign: isRTL ? "right" : "left",
+                  display: "block",
+                }}
+              >
+                {tPlayground("radius")}
               </Label>
               <Input
                 id="radius"
@@ -185,6 +250,10 @@ export function ApiPlayground({
                 onChange={(e) => setRadius(Number(e.target.value))}
                 type="number"
                 min={0}
+                style={{
+                  textAlign: isRTL ? "right" : "left",
+                  direction: isRTL ? "rtl" : "ltr",
+                }}
               />
             </div>
             <Button
@@ -192,8 +261,13 @@ export function ApiPlayground({
               value="getNearby"
               size="lg"
               className="flex items-center gap-2 h-12 text-base font-medium mt-2 md:mt-5 w-full md:w-auto justify-center"
+              style={{
+                flexDirection: isRTL ? "row-reverse" : "row",
+              }}
             >
-              {loading_ ? "Loading..." : "Get Nearby Municipalities"}{" "}
+              {loading_
+                ? tPlayground("loading")
+                : tPlayground("getNearbyMunicipalities")}{" "}
               <Send size={18} />
             </Button>
           </div>
@@ -204,7 +278,14 @@ export function ApiPlayground({
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
         >
-          <Label>API Response</Label>
+          <Label
+            style={{
+              textAlign: isRTL ? "right" : "left",
+              display: "block",
+            }}
+          >
+            {tPlayground("apiResponse")}
+          </Label>
           <motion.pre
             style={{
               background: "#f8f9fa",
@@ -216,6 +297,8 @@ export function ApiPlayground({
               fontSize: 14,
               marginTop: 8,
               width: "100%",
+              textAlign: isRTL ? "right" : "left",
+              direction: isRTL ? "rtl" : "ltr",
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -223,14 +306,14 @@ export function ApiPlayground({
           >
             {result
               ? JSON.stringify(result, null, 2)
-              : "// Your API response will appear here"}
+              : tPlayground("apiResponsePlaceholder")}
           </motion.pre>
           {result && lastUrl && (
             <Button
               type="button"
               onClick={() => {
                 navigator.clipboard.writeText(lastUrl);
-                toast.info("URL copied to clipboard!");
+                toast.info(tPlayground("urlCopied"));
               }}
               variant="outline"
               size="lg"
@@ -243,20 +326,21 @@ export function ApiPlayground({
                 fontWeight: 500,
                 marginTop: 16,
                 cursor: "pointer",
+                flexDirection: isRTL ? "row-reverse" : "row",
               }}
             >
-              Copy URL <Send size={18} />
+              {tPlayground("copyUrl")} <Send size={18} />
             </Button>
           )}
         </motion.div>
       </Card>
       <ToastContainer
-        position="top-right"
+        position={isRTL ? "top-left" : "top-right"}
         autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
-        rtl={false}
+        rtl={isRTL}
         pauseOnFocusLoss
         draggable
         pauseOnHover

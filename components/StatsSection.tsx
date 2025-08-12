@@ -2,12 +2,14 @@
 import { motion } from "framer-motion";
 import { Card } from "./ui/card";
 import { Database, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface Stat {
   icon: React.ReactNode;
   label: string;
   value: number;
   suffix?: string;
+  translationKey: string;
 }
 
 interface StatsSectionProps {
@@ -21,12 +23,14 @@ const defaultStats: Stat[] = [
     label: "Governorates",
     value: 24,
     suffix: "",
+    translationKey: "governorates",
   },
   {
     icon: <Users size={28} strokeWidth={1.5} />,
     label: "Delegations",
     value: 264,
     suffix: "",
+    translationKey: "delegations",
   },
 ];
 
@@ -34,6 +38,7 @@ export function StatsSection({
   stats = defaultStats,
   className,
 }: StatsSectionProps) {
+  const tStats = useTranslations("stats");
   return (
     <section className={className} style={{ padding: "40px 0" }}>
       <motion.h2
@@ -49,7 +54,7 @@ export function StatsSection({
         transition={{ duration: 0.5 }}
         viewport={{ once: true }}
       >
-        Data Overview
+        {tStats("title")}
       </motion.h2>
 
       <div
@@ -129,7 +134,7 @@ export function StatsSection({
                   lineHeight: 1.4,
                 }}
               >
-                {stat.label}
+                {tStats(stat.translationKey)}
               </div>
             </Card>
           </motion.div>
