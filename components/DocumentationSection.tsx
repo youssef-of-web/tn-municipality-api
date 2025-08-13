@@ -1,11 +1,14 @@
+import { useTranslations } from "next-intl";
 import { Card } from "./ui/card";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface DocumentationSectionProps {
   title?: string;
   endpoints?: string[];
   parameters?: Array<{
     name: string;
-    description: string;
+    translationKey: string;
     example: string;
     endpoint: number;
     type: string;
@@ -22,29 +25,28 @@ export function DocumentationSection({
     {
       name: "name",
       type: "string",
-      description: "Filter by governorate name (e.g., Ariana, Tunis, Sfax)",
+      translationKey: "name",
       example: "?name=ariana",
       endpoint: 0,
     },
     {
       name: "delegation",
       type: "string",
-      description: "Filter by delegation name within a governorate",
+      translationKey: "delegation",
       example: "?delegation=ville",
       endpoint: 0,
     },
     {
       name: "postalCode",
       type: "string",
-      description: "Filter by postal code (5-digit format)",
+      translationKey: "postalCode",
       example: "?postalCode=2058",
       endpoint: 0,
     },
     {
       name: "lat, lng, radius",
       type: "[number, number, number]",
-      description:
-        "Get municipalities near a specific location within a radius (in km)",
+      translationKey: "location",
       example: "?lat=36.8065&lng=10.1815&radius=5000",
       endpoint: 1,
     },
@@ -52,8 +54,25 @@ export function DocumentationSection({
   exampleResponse,
   className,
 }: DocumentationSectionProps) {
+  const tDoc = useTranslations("documentation");
+  const pathname = usePathname();
+  const [currentLanguage, setCurrentLanguage] = useState("en");
+
+  const isRTL = currentLanguage === "ar";
+
+  useEffect(() => {
+    const pathLang = pathname.startsWith("/ar") ? "ar" : "en";
+    setCurrentLanguage(pathLang);
+  }, [pathname]);
+
   return (
-    <div className={className} style={{ padding: "0 8px" }}>
+    <div
+      className={className}
+      style={{
+        padding: "0 8px",
+        direction: isRTL ? "rtl" : "ltr",
+      }}
+    >
       <h2
         style={{
           fontSize: 28,
@@ -62,12 +81,19 @@ export function DocumentationSection({
           textAlign: "center",
         }}
       >
-        {title}
+        {tDoc("title")}
       </h2>
 
       <Card style={{ padding: 24, marginBottom: 24 }}>
-        <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>
-          🔗 API Endpoints
+        <h3
+          style={{
+            fontSize: 20,
+            fontWeight: 600,
+            marginBottom: 16,
+            textAlign: isRTL ? "right" : "left",
+          }}
+        >
+          {tDoc("endpoints.title")}
         </h3>
         {endpoints.map((endpoint: string) => (
           <code
@@ -80,18 +106,29 @@ export function DocumentationSection({
               fontSize: 16,
               fontWeight: 500,
               fontFamily: "monospace",
+              textAlign: isRTL ? "right" : "left",
+              direction: "ltr",
             }}
           >
             {endpoint}
           </code>
         ))}
-        <p style={{ marginTop: 12, color: "#666", fontSize: 14 }}>
-          Base URL:{" "}
+        <p
+          style={{
+            marginTop: 12,
+            color: "#666",
+            fontSize: 14,
+            textAlign: isRTL ? "right" : "left",
+          }}
+        >
+          {tDoc("endpoints.baseUrl")}{" "}
           <code
             style={{
               background: "#f0f0f0",
               padding: "2px 6px",
               borderRadius: 4,
+              direction: "ltr",
+              display: "inline-block",
             }}
           >
             https://tn-municipality-api.vercel.app
@@ -100,12 +137,25 @@ export function DocumentationSection({
       </Card>
 
       <Card style={{ padding: 24, marginBottom: 24 }}>
-        <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>
-          🔍 Query Parameters
+        <h3
+          style={{
+            fontSize: 20,
+            fontWeight: 600,
+            marginBottom: 16,
+            textAlign: isRTL ? "right" : "left",
+          }}
+        >
+          {tDoc("parameters.title")}
         </h3>
-        <p style={{ color: "#666", marginBottom: 16, fontSize: 14 }}>
-          Use these parameters to filter the municipality data. All parameters
-          are optional and can be combined.
+        <p
+          style={{
+            color: "#666",
+            marginBottom: 16,
+            fontSize: 14,
+            textAlign: isRTL ? "right" : "left",
+          }}
+        >
+          {tDoc("parameters.description")}
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {parameters.map((param, index) => (
@@ -124,6 +174,8 @@ export function DocumentationSection({
                   alignItems: "center",
                   gap: 8,
                   marginBottom: 8,
+                  flexDirection: isRTL ? "row-reverse" : "row",
+                  justifyContent: isRTL ? "flex-end" : "flex-start",
                 }}
               >
                 <code
@@ -134,24 +186,46 @@ export function DocumentationSection({
                     borderRadius: 4,
                     fontSize: 14,
                     fontWeight: 600,
+                    direction: "ltr",
                   }}
                 >
                   {param.name}
                 </code>
-                <span style={{ fontSize: 12, color: "#666" }}>
+                <span
+                  style={{
+                    fontSize: 12,
+                    color: "#666",
+                    direction: "ltr",
+                  }}
+                >
                   {param.type}
                 </span>
               </div>
-              <p style={{ marginBottom: 8, fontSize: 14, lineHeight: 1.5 }}>
-                {param.description}
+              <p
+                style={{
+                  marginBottom: 8,
+                  fontSize: 14,
+                  lineHeight: 1.5,
+                  textAlign: isRTL ? "right" : "left",
+                }}
+              >
+                {tDoc(`parameters.${param.translationKey}.description`)}
               </p>
-              <div style={{ fontSize: 13, color: "#666" }}>
-                <strong>Example:</strong>{" "}
+              <div
+                style={{
+                  fontSize: 13,
+                  color: "#666",
+                  textAlign: isRTL ? "right" : "left",
+                }}
+              >
+                <strong>{tDoc("examples.exampleLabel")}:</strong>{" "}
                 <code
                   style={{
                     background: "#f0f0f0",
                     padding: "2px 6px",
                     borderRadius: 4,
+                    direction: "ltr",
+                    display: "inline-block",
                   }}
                 >
                   {endpoints[param.endpoint]}
@@ -164,13 +238,27 @@ export function DocumentationSection({
       </Card>
 
       <Card style={{ padding: 24, marginBottom: 24 }}>
-        <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>
-          💡 Usage Examples
+        <h3
+          style={{
+            fontSize: 20,
+            fontWeight: 600,
+            marginBottom: 16,
+            textAlign: isRTL ? "right" : "left",
+          }}
+        >
+          {tDoc("examples.title")}
         </h3>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div>
-            <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>
-              Get all municipalities
+            <h4
+              style={{
+                fontSize: 16,
+                fontWeight: 600,
+                marginBottom: 8,
+                textAlign: isRTL ? "right" : "left",
+              }}
+            >
+              {tDoc("examples.getAllMunicipalities")}
             </h4>
             <pre
               style={{
@@ -180,6 +268,8 @@ export function DocumentationSection({
                 borderRadius: 8,
                 fontSize: 14,
                 overflow: "auto",
+                direction: "ltr",
+                textAlign: "left",
               }}
             >
               {`fetch('/api/municipalities')
@@ -189,8 +279,15 @@ export function DocumentationSection({
           </div>
 
           <div>
-            <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>
-              Filter by governorate
+            <h4
+              style={{
+                fontSize: 16,
+                fontWeight: 600,
+                marginBottom: 8,
+                textAlign: isRTL ? "right" : "left",
+              }}
+            >
+              {tDoc("examples.filterByGovernorate")}
             </h4>
             <pre
               style={{
@@ -200,6 +297,8 @@ export function DocumentationSection({
                 borderRadius: 8,
                 fontSize: 14,
                 overflow: "auto",
+                direction: "ltr",
+                textAlign: "left",
               }}
             >
               {`fetch('/api/municipalities?name=ariana')
@@ -209,8 +308,15 @@ export function DocumentationSection({
           </div>
 
           <div>
-            <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>
-              Filter by delegation
+            <h4
+              style={{
+                fontSize: 16,
+                fontWeight: 600,
+                marginBottom: 8,
+                textAlign: isRTL ? "right" : "left",
+              }}
+            >
+              {tDoc("examples.filterByDelegation")}
             </h4>
             <pre
               style={{
@@ -220,6 +326,8 @@ export function DocumentationSection({
                 borderRadius: 8,
                 fontSize: 14,
                 overflow: "auto",
+                direction: "ltr",
+                textAlign: "left",
               }}
             >
               {`fetch('/api/municipalities?delegation=ville')
@@ -229,8 +337,15 @@ export function DocumentationSection({
           </div>
 
           <div>
-            <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>
-              Filter by postal code
+            <h4
+              style={{
+                fontSize: 16,
+                fontWeight: 600,
+                marginBottom: 8,
+                textAlign: isRTL ? "right" : "left",
+              }}
+            >
+              {tDoc("examples.filterByPostalCode")}
             </h4>
             <pre
               style={{
@@ -240,6 +355,8 @@ export function DocumentationSection({
                 borderRadius: 8,
                 fontSize: 14,
                 overflow: "auto",
+                direction: "ltr",
+                textAlign: "left",
               }}
             >
               {`fetch('/api/municipalities?postalCode=2058')
@@ -249,8 +366,15 @@ export function DocumentationSection({
           </div>
 
           <div>
-            <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>
-              Combine multiple filters
+            <h4
+              style={{
+                fontSize: 16,
+                fontWeight: 600,
+                marginBottom: 8,
+                textAlign: isRTL ? "right" : "left",
+              }}
+            >
+              {tDoc("examples.combineFilters")}
             </h4>
             <pre
               style={{
@@ -260,6 +384,8 @@ export function DocumentationSection({
                 borderRadius: 8,
                 fontSize: 14,
                 overflow: "auto",
+                direction: "ltr",
+                textAlign: "left",
               }}
             >
               {`fetch('/api/municipalities?name=ariana&delegation=ville')
@@ -272,8 +398,15 @@ export function DocumentationSection({
 
       {exampleResponse && (
         <Card style={{ padding: 24, marginBottom: 24 }}>
-          <h3 style={{ fontSize: 20, fontWeight: 600, marginBottom: 16 }}>
-            📄 Example Response
+          <h3
+            style={{
+              fontSize: 20,
+              fontWeight: 600,
+              marginBottom: 16,
+              textAlign: isRTL ? "right" : "left",
+            }}
+          >
+            {tDoc("response.title")}
           </h3>
           <pre
             style={{
@@ -284,6 +417,8 @@ export function DocumentationSection({
               overflow: "auto",
               fontSize: 14,
               border: "1px solid #e9ecef",
+              direction: "ltr",
+              textAlign: "left",
             }}
           >
             {exampleResponse}

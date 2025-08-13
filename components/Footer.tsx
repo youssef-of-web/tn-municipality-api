@@ -1,12 +1,11 @@
+import { useTranslations } from "next-intl";
+
 interface FooterProps {
-  text?: string;
   className?: string;
 }
 
-export function Footer({
-  text = "Built with ❤️ for the Tunisian developer community",
-  className,
-}: FooterProps) {
+export function Footer({ className }: FooterProps) {
+  const tFooter = useTranslations("footer");
   return (
     <div
       style={{
@@ -18,7 +17,7 @@ export function Footer({
       }}
       className={className}
     >
-      <p style={{ color: "#666" }}>{text}</p>
+      <p style={{ color: "#666" }}>{tFooter("text")}</p>
     </div>
   );
 }

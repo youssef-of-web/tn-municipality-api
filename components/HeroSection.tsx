@@ -1,3 +1,6 @@
+"use client";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 
 interface HeroSectionProps {
@@ -19,9 +22,23 @@ export function HeroSection({
   onSecondaryClick,
   className,
 }: HeroSectionProps) {
+  const [currentLanguage, setCurrentLanguage] = useState("en");
+  const pathname = usePathname();
+
+  const isRTL = currentLanguage === "ar";
+
+  useEffect(() => {
+    const pathLang = pathname.startsWith("/ar") ? "ar" : "en";
+    setCurrentLanguage(pathLang);
+  }, [pathname]);
   return (
     <div
-      style={{ textAlign: "center", marginBottom: 48, padding: "0 8px" }}
+      style={{
+        textAlign: "center",
+        marginBottom: 48,
+        padding: "0 8px",
+        direction: isRTL ? "rtl" : "ltr",
+      }}
       className={className}
     >
       <h1
@@ -43,6 +60,8 @@ export function HeroSection({
           marginBottom: 32,
           maxWidth: 600,
           margin: "0 auto 32px",
+          textAlign: "center",
+          direction: isRTL ? "rtl" : "ltr",
         }}
       >
         {description}
@@ -53,6 +72,7 @@ export function HeroSection({
           gap: 16,
           justifyContent: "center",
           flexWrap: "wrap",
+          flexDirection: isRTL ? "row-reverse" : "row",
         }}
       >
         <Button size="lg" onClick={onPrimaryClick}>

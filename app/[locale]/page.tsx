@@ -1,32 +1,36 @@
 "use client";
 
-import { HeroSection } from "../components/HeroSection";
-import { FeaturesSection } from "../components/FeaturesSection";
-import { ApiPlayground } from "../components/ApiPlayground";
-import { DocumentationSection } from "../components/DocumentationSection";
-import { Footer } from "../components/Footer";
-import { Navbar } from "../components/Navbar";
-import { StickyGitHubButton } from "../components/StickyGitHubButton";
-import { ScrollToTop } from "../components/ScrollToTop";
-import { StatsSection } from "../components/StatsSection";
+import { useTranslations } from "next-intl";
+import { HeroSection } from "../../components/HeroSection";
+import { FeaturesSection } from "../../components/FeaturesSection";
+import { ApiPlayground } from "../../components/ApiPlayground";
+import { DocumentationSection } from "../../components/DocumentationSection";
+import { Footer } from "../../components/Footer";
+import { Navbar } from "../../components/Navbar";
+import { StickyGitHubButton } from "../../components/StickyGitHubButton";
+import { ScrollToTop } from "../../components/ScrollToTop";
+import { StatsSection } from "../../components/StatsSection";
 
 export default function HomePage() {
+  const tHero = useTranslations("hero");
+  const tFeatures = useTranslations("features");
+  const tPlayground = useTranslations("playground");
+
   const features = [
     {
-      icon: "🚀",
-      title: "Fast & Reliable",
-      description: "Lightning-fast responses with 99.9% uptime guarantee",
+      icon: "📊",
+      title: tFeatures("richData.title"),
+      description: tFeatures("richData.description"),
     },
     {
       icon: "🔍",
-      title: "Powerful Filtering",
-      description: "Filter by governorate, delegation, postal code, and more",
+      title: tFeatures("powerfulFiltering.title"),
+      description: tFeatures("powerfulFiltering.description"),
     },
     {
-      icon: "📊",
-      title: "Rich Data",
-      description:
-        "Complete municipality data with coordinates and Arabic names",
+      icon: "🚀",
+      title: tFeatures("fastReliable.title"),
+      description: tFeatures("fastReliable.description"),
     },
   ];
 
@@ -81,8 +85,10 @@ export default function HomePage() {
       >
         <div id="home">
           <HeroSection
-            title="Tunisian Municipality API"
-            description="Access comprehensive Tunisian municipality data with powerful filtering options. Built for developers, by developers."
+            title={tHero("title")}
+            description={tHero("description")}
+            primaryButtonText={tHero("primaryButton")}
+            secondaryButtonText={tHero("secondaryButton")}
             onPrimaryClick={() =>
               document
                 .getElementById("playground")
@@ -101,7 +107,10 @@ export default function HomePage() {
         <StatsSection />
 
         <div id="playground" style={{ marginBottom: 48 }}>
-          <ApiPlayground heading="API Playground" description="" />
+          <ApiPlayground
+            heading={tPlayground("title")}
+            description={tPlayground("description")}
+          />
         </div>
 
         <div id="docs">
