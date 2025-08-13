@@ -297,8 +297,8 @@ export function ApiPlayground({
               fontSize: 14,
               marginTop: 8,
               width: "100%",
-              textAlign: isRTL ? "right" : "left",
-              direction: isRTL ? "rtl" : "ltr",
+              textAlign: "left",
+              direction: "ltr",
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
