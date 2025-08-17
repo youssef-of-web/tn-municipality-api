@@ -8,6 +8,7 @@ import {
   Code2,
   Globe,
   ChevronDown,
+  Map,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -43,6 +44,7 @@ export function Navbar({ className }: NavbarProps) {
     { name: t("home"), href: "#home", icon: <Home size={22} /> },
     { name: t("api"), href: "#playground", icon: <Code2 size={22} /> },
     { name: t("docs"), href: "#docs", icon: <BookOpen size={22} /> },
+    { name: t("map"), href: "#map", icon: <Map size={22} /> },
   ];
   const switchLanguage = (langCode: string) => {
     setCurrentLanguage(langCode);

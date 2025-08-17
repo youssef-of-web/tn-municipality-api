@@ -1,24 +1,6 @@
 import { data } from "@/data/data";
 import { NextResponse } from "next/server";
-
-/**
- * Interface for municipality data structure
- */
-interface Municipality {
-  Name: string;
-  NameAr: string;
-  Value: string;
-  Delegations: Delegation[];
-}
-
-interface Delegation {
-  Name: string;
-  NameAr: string;
-  Value: string;
-  PostalCode: string;
-  Latitude: number;
-  Longitude: number;
-}
+import { Municipality } from "@/types";
 
 /**
  * Searches for municipalities by governorate name
