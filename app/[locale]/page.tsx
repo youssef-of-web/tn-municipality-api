@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import dynamic from "next/dynamic";
 import { HeroSection } from "../../components/HeroSection";
 import { FeaturesSection } from "../../components/FeaturesSection";
 import { ApiPlayground } from "../../components/ApiPlayground";
@@ -10,6 +11,11 @@ import { Navbar } from "../../components/Navbar";
 import { StickyGitHubButton } from "../../components/StickyGitHubButton";
 import { ScrollToTop } from "../../components/ScrollToTop";
 import { StatsSection } from "../../components/StatsSection";
+
+const InteractiveMap = dynamic(
+  () => import("../../components/InteractiveMap"),
+  { ssr: false },
+);
 
 export default function HomePage() {
   const tHero = useTranslations("hero");
@@ -105,6 +111,10 @@ export default function HomePage() {
         <FeaturesSection features={features} />
 
         <StatsSection />
+
+        <div id="map" style={{ marginBottom: 48 }}>
+          <InteractiveMap />
+        </div>
 
         <div id="playground" style={{ marginBottom: 48 }}>
           <ApiPlayground

@@ -3,6 +3,7 @@
     "home": "Home",
     "api": "API",
     "docs": "Docs",
+    "map": "Map",
     "github": "GitHub",
     "logo": "Municipality API"
   },
@@ -30,6 +31,13 @@
     "title": "Data Overview",
     "governorates": "Governorates",
     "delegations": "Delegations"
+  },
+  "map": {
+    "title": "Interactive Map",
+    "ZoomInstruction": "How to see markers",
+    "ZoomInstructionDescription": "Zoom in closer (level 10+) to see delegation markers in specific areas",
+    "postalCode": "Postal Code",
+    "coordinates": "Coordinates"
   },
   "playground": {
     "title": "API Playground",
